@@ -12,6 +12,8 @@ from .functions import *
 
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 @unauthenticated_user
 def patient_register_page(request):
@@ -99,3 +101,26 @@ def home_page(request):
         'is_patient': is_patient,
     }
     return render(request, 'home.html', context)
+
+@login_required
+def update_user(request):
+    if request.method == 'POST':
+        user_form = Update(request.POST, instance=request.user)
+        if 'old_password' in request.POST and request.POST['old_password']:
+            password_form = PasswordChangeForm(request.user, request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)  # Important, to keep the user logged in
+        if user_form.is_valid():
+            user_form.save()
+            messages.success(request, 'Your profile has been updated.')
+            return redirect('home')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        user_form = Update(instance=request.user)
+        password_form = PasswordChangeForm(request.user)
+
+    return render(request, 'update_user.html', {
+        'user_form': user_form,
+        'password_form': password_form})
