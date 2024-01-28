@@ -1,6 +1,11 @@
 from django.contrib import admin
 from .models import *
+from django.contrib.auth.models import Group, Permission
+
 # Register your models here.
+Group.objects.get_or_create(name='patient')
+Group.objects.get_or_create(name='employee')
+
 class ClinicAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Clinic, ClinicAdmin)
