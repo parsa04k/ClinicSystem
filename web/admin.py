@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group, Permission
 
 # Register your models here.
 Group.objects.get_or_create(name='patient')
-Group.objects.get_or_create(name='employee')
+Group.objects.get_or_create(name='employee]')
 
 class ClinicAdmin(admin.ModelAdmin):
     pass
