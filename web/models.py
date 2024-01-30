@@ -9,12 +9,19 @@ class Clinic(models.Model):
     availability = models.BooleanField()
     capacity = models.PositiveIntegerField()
     
+    def save(self, *args, **kwargs):
+        if self.capacity <= 0:
+            self.availability = False
+        super().save(*args, **kwargs)
+    
 
 class Patient(models.Model):
     user        = models.OneToOneField(User,on_delete=models.CASCADE)
-    name = models.CharField(max_length = 20, null=True,blank=True)
+    name        = models.CharField(max_length = 20, null=True,blank=True)
     admitDate   = models.DateField(auto_now=True)
     status      = models.BooleanField(default=False)
+    
+    
     @property
     def get_name(self):
         return self.user.first_name+" "+self.user.last_name
@@ -26,7 +33,7 @@ class Employee(models.Model):
     user        = models.OneToOneField(User,on_delete=models.CASCADE)
     admitDate   = models.DateField(auto_now=True)
     status      = models.BooleanField(default=False)
-    clinicID    = models.PositiveIntegerField()
+    clinic      = models.ForeignKey(Clinic, on_delete=models.CASCADE, null=True)
     @property
     def get_name(self):
         return self.user.first_name+" "+self.user.last_name
@@ -40,8 +47,8 @@ class Appointment(models.Model):
         ('available','Available'),
         ('finished','Finished')
     }
-    patientId=models.PositiveIntegerField(null=True)
-    clinicID=models.PositiveIntegerField(null=True)
-    patientName=models.CharField(max_length=40,null=True)
-    appointmentDate=models.DateField(auto_now=True)
+    appointment_id = models.AutoField(primary_key=True,default=None)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, default=None)
+    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE,default=None)
+    appointmentDate=models.DateField()
     status=models.TextField(default='available', choices=STATUS_OF_APPOINTMENT)

@@ -17,11 +17,43 @@ class PatientRegister(forms.ModelForm):
         fields = ['name']
         
 class EmployeeRegister(forms.ModelForm):
+    clinic = forms.ModelChoiceField(queryset=Clinic.objects.all())
+
     class Meta:
         model = Employee
-        fields = ['clinicID']
+        fields = ['clinic']
+
+    def save(self, commit=True):
+        employee = super(EmployeeRegister, self).save(commit=False)
+        employee.clinic = self.cleaned_data['clinic']
+
+        if commit:
+            employee.save()
+
+        return employee
+    
         
 class Update(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name','email']
+        
+class ChangeCapacity(forms.ModelForm):
+    class Meta:
+        model = Clinic
+        fields = ['capacity']
+        
+class CancelAppointmentForm(forms.ModelForm):
+    class Meta:
+        model = Appointment
+        fields = ['appointment_id']
+
+    def save(self, commit=True):
+        appointment = super().save(commit=False)
+        appointment.patient = None
+        appointment.status = 'available'
+
+        if commit:
+            appointment.save()
+
+        return appointment

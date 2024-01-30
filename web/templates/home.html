@@ -12,6 +12,7 @@
 
         .profile-info {
             width: 33.33%;  /* Adjusted to take up one third of the screen */
+            height: 100vh;  /* Added to make the box fill the screen vertically */
             float: left;  /* Floats the box to the left side of the screen */
             padding: 20px;
             box-sizing: border-box;
@@ -20,7 +21,6 @@
             border-radius: 10px;  /* Rounds the corners of the box */
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);  /* Adds a subtle shadow to the box */
         }
-
         .profile-info h2 {
             color: #333;
             margin-bottom: 20px;
@@ -51,9 +51,42 @@
     {% for message in messages %}
                     <p id="messages">{{message}}</p>
     {% endfor %}
-
+      
     {% if is_employee %}
-     //employee page
+    <div style="
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+">
+    <div style="
+        width: 33%;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        text-align: center;
+    ">
+    <i class="fas fa-envolope" style="font-size: 2em; margin-bottom: 20px;"></i>
+        <a href="{% url 'current_visits' %}">
+            <button style="
+                font-size: 1em;
+                padding: 10px;
+                border: none;
+                border-radius: 5px;
+                color: white;
+                background-color: #007BFF;
+                text-decoration: none;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            " onmouseover="this.style.backgroundColor='#0056b3'" onmouseout="this.style.backgroundColor='#007BFF'">
+                Go to Current Visits
+            </button>
+        </a>
+    </div>
+</div>
+
+    
     {% endif %}
     
     {% if is_patient %}
@@ -62,5 +95,19 @@
 </div>
 {% endblock %}
 
-
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    #appointment {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+</style>
+{% for appointment in appointments %}
+<p id='appointment'> {{appointment}} </p>
+{% endfor %}  
 

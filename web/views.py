@@ -1,8 +1,8 @@
-from django.shortcuts import render , redirect
+from django.shortcuts import render , redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 
 from .forms import *
@@ -35,6 +35,7 @@ def patient_register_page(request):
     context = {'form' :form,'name_form':name_form}
     return render(request, 'register_patient.html', context)
 
+
 @unauthenticated_user
 def employee_register_page(request):
     form = Register()
@@ -45,7 +46,7 @@ def employee_register_page(request):
         if form.is_valid() and clinic_form.is_valid():
             user = form.save()
             employee = clinic_form.save(commit=False)
-            group = Group.objects.get(name='employee')
+            group, created = Group.objects.get_or_create(name='employee')
             user.groups.add(group)
             employee.user = user
             employee.save()
@@ -54,6 +55,7 @@ def employee_register_page(request):
             
     context = {'form' :form, 'clinic_form':clinic_form}
     return render(request, 'register_employee.html', context)
+
 
 @unauthenticated_user
 def login_page(request):
@@ -124,3 +126,54 @@ def update_user(request):
     return render(request, 'update_user.html', {
         'user_form': user_form,
         'password_form': password_form})
+    
+#=============================================================================================
+#=============================CANCEL APPOINTMENT ONLY EMPLOYEES===============================
+#=============================================================================================
+   
+@login_required 
+@allowed_user(allowed_roles=['employee'])
+def capacity_page(request):
+    employee = Employee.objects.get(user=request.user)
+    clinic = employee.clinic
+    if request.method == 'POST':
+        form = ChangeCapacity(request.POST, instance=employee.clinic)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'you have changed the capacity')
+            return redirect('home')
+    else:
+        form = ChangeCapacity(instance=employee.clinic)
+    return render(request, 'changecapacity.html', {'form': form})
+
+
+
+#=============================================================================================
+#=============================CANCEL APPOINTMENT ONLY EMPLOYEES===============================
+#=============================================================================================
+    
+@login_required
+@allowed_user(allowed_roles=['employee'])
+def current_visits(request):
+    # get the logged in user
+    user = request.user
+
+    # get the employee object for this user
+    employee = Employee.objects.get(user=user)
+
+    # get the clinic for this employee
+    clinic = employee.clinic
+
+    # get all appointments for this clinic
+    appointments = Appointment.objects.filter(clinic=clinic)
+    
+    if request.method == 'POST':
+        appointment_id = request.POST.get('appointment_id')
+        appointment = Appointment.objects.get(appointment_id=appointment_id)
+        no_patient = Patient.objects.get(name="No Patient")
+        appointment.patient = no_patient
+        appointment.status = 'available'
+        appointment.save()
+        return redirect('current_visits')
+    
+    return render(request, 'current_visits.html',{'appointments':appointments})
