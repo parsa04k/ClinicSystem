@@ -130,6 +130,7 @@
         border-radius: 5px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
         text-align: center;
+        margin-right: 10px;
     ">
     <i class="fas fa-envelope" style="font-size: 2em; margin-bottom: 20px;"></i>
         <a href="{% url 'appointment_history' %}">
@@ -145,6 +146,31 @@
                 transition: background-color 0.3s ease;
             " onmouseover="this.style.backgroundColor='#0056b3'" onmouseout="this.style.backgroundColor='#007BFF'">
                 Show My History
+            </button>
+        </a>
+    </div>
+    <div style="
+        width: 33%;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        text-align: center;
+    ">
+    <i class="fas fa-calendar-plus" style="font-size: 2em; margin-bottom: 20px;"></i>
+        <a href="{% url 'create_appointment' %}">
+            <button style="
+                font-size: 1em;
+                padding: 10px;
+                border: none;
+                border-radius: 5px;
+                color: white;
+                background-color: #007BFF;
+                text-decoration: none;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            " onmouseover="this.style.backgroundColor='#0056b3'" onmouseout="this.style.backgroundColor='#007BFF'">
+                Create Appointment
             </button>
         </a>
     </div>
