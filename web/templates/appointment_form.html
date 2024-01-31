@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        padding: 20px;
+    }
+
+    h1, h2 {
+        color: #333;
+    }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        box-sizing: border-box;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        margin: 10px 0;
+        border: none;
+        cursor: pointer;
+    }
+
+    .appointment-item {
+        border: 1px solid #ddd;
+        margin: 10px 0;
+        padding: 10px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .appointment-details p {
+        margin: 0;
+    }
+</style>
+<div class="col-md-6 offset-md-3">
+    <h1>Appointment Register</h1>
+    <br>
+    <a href="{% url 'create_appointment' %}">
+    <button type="submit" >Create an appointment</button>
+    </a>
+    <br>
+    <h2>Available Appointments</h2>
+    <form method="get">
+        {% csrf_token %}
+        <input type="text" name="search" placeholder="Search clinic or date">
+        <button type="submit">Search</button>
+    </form>
+    {% for appointment in available_appointments %}
+        <div class="appointment-item">
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="new_appointment" value="{{ appointment.appointment_id }}">
+                <button type="submit">Book</button>
+            </form>
+            <div class="appointment-details">
+                <p>ID: {{ appointment.appointment_id }}</p>
+                <p>Clinic: {{ appointment.clinic.name }}</p>
+                <p>Date: {{ appointment.appointmentDate }}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock content %}

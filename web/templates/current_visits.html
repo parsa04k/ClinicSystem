@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+    }
+    .appointment-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fff;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    }
+    .appointment-item form {
+        margin-right: 10px;
+    }
+    .appointment-item button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .appointment-item button:hover {
+        background-color: #0056b3;
+    }
+    .appointment-details {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .search-field {
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="search-field">
+    <form method="get">
+        <input type="text" name="search_id" placeholder="Search by ID">
+        <input type="date" name="search_date" placeholder="Search by Date">
+        <select name="search_status">
+            <option value="">All</option>
+            <option value="occupied">Occupied</option>
+            <option value="available">Available</option>
+            <option value="finished">Finished</option>
+        </select>
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+{% for appointment in appointments %}
+    <div class="appointment-item">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="appointment_id" value="{{ appointment.appointment_id }}">
+            <button type="submit" name="action" value="cancel">Cancel </button>
+            <button type="submit" name="action" value="finish">Finish </button>
+        </form>
+        <div class="appointment-details">
+            <p>ID: {{ appointment.appointment_id }}</p>
+            <p>Patient: {{ appointment.patient.name }}</p>
+            <p>Date: {{ appointment.appointmentDate }}</p>
+            <p>Status: {{ appointment.status }}</p>
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock content %}
