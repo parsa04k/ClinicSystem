@@ -8,28 +8,28 @@ from .models import *
 
 class Register(UserCreationForm):
     class Meta:
-        model = User
+        model  = User
         fields = ['username','email','password1','password2']
         
 class PatientRegister(forms.ModelForm):
     class Meta:
-        model = Patient
+        model  = Patient
         fields = ['name']
         
 class EmployeeRegister(forms.ModelForm):
     clinic = forms.ModelChoiceField(
-        queryset=Clinic.objects.all(), 
-        empty_label="(Nothing selected)",
-        to_field_name="id",
+        queryset      = Clinic.objects.all(), 
+        empty_label   = "(Nothing selected)",
+        to_field_name = "id",
     )
     clinic.label_from_instance = lambda obj: f"{obj.name} (ID: {obj.id})"
 
     class Meta:
-        model = Employee
+        model  = Employee
         fields = ['clinic']
 
     def save(self, commit=True):
-        employee = super(EmployeeRegister, self).save(commit=False)
+        employee        = super(EmployeeRegister, self).save(commit=False)
         employee.clinic = self.cleaned_data['clinic']
 
         if commit:
@@ -40,23 +40,23 @@ class EmployeeRegister(forms.ModelForm):
         
 class Update(forms.ModelForm):
     class Meta:
-        model = User
+        model  = User
         fields = ['first_name','email']
         
 class ChangeCapacity(forms.ModelForm):
     class Meta:
-        model = Clinic
+        model  = Clinic
         fields = ['capacity']
         
 class CancelAppointmentForm(forms.ModelForm):
     class Meta:
-        model = Appointment
+        model  = Appointment
         fields = ['appointment_id']
 
     def save(self, commit=True):
         appointment = super().save(commit=False)
         appointment.patient = None
-        appointment.status = 'available'
+        appointment.status  = 'available'
 
         if commit:
             appointment.save()
@@ -68,11 +68,11 @@ class AppointmentForm(forms.ModelForm):
         widget=forms.DateInput(attrs={'type': 'date'})
     )
     clinic = forms.ModelChoiceField(
-        queryset=Clinic.objects.all(), 
-        empty_label="(Nothing selected)",
-        to_field_name="id",
+        queryset      = Clinic.objects.all(), 
+        empty_label   = "(Nothing selected)",
+        to_field_name = "id",
     )
     clinic.label_from_instance = lambda obj: f"{obj.name} (ID: {obj.id})"
     class Meta:
-        model = Appointment
+        model  = Appointment
         fields = ['clinic', 'appointmentDate']
