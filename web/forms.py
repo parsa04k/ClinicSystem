@@ -26,7 +26,7 @@ class EmployeeRegister(forms.ModelForm):
 
     class Meta:
         model  = Employee
-        fields = ['clinic']
+        fields = ['clinic','name']
 
     def save(self, commit=True):
         employee        = super(EmployeeRegister, self).save(commit=False)

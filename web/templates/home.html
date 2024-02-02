@@ -44,7 +44,13 @@
         <h2>Profile Information</h2>
         <p><span class="label">Username:</span> {{ user.username }}</p>
         <p><span class="label">Email:</span> {{ user.email }}</p>
-        <p><span class="label">Name:</span> {{ user.first_name }}</p>
+        {% if is_patient %}
+        <p><span class="label">Name:</span> {{ patient.name }}</p>
+        {% endif %}
+        {% if is_employee%}
+        <p><span class="label">Name:</span> {{ employee.name }}</p>
+        {% endif %}
+
     </div>
 </body>
 <div>

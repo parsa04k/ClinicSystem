@@ -22,7 +22,7 @@ admin.site.register(Appointment, AppointmentAdmin)
 
 id_and_capacity = requests.get('http://127.0.0.1:8080/slots')
 id_and_capacity = eval(id_and_capacity.text)
-print(id_and_capacity)
+
 # Register your models here.
 Group.objects.get_or_create(name='patient')
 Group.objects.get_or_create(name='employee]')

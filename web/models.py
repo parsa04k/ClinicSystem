@@ -27,6 +27,7 @@ class Patient(models.Model):
     
 class Employee(models.Model):
     user        = models.OneToOneField(User, on_delete=models.CASCADE)
+    name        = models.CharField(max_length = 20, null=True,blank=True)
     admitDate   = models.DateField(auto_now=True)
     status      = models.BooleanField(default=False)
     clinic      = models.ForeignKey(Clinic, on_delete=models.CASCADE, null=True)

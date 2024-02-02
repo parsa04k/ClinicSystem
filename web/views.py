@@ -71,7 +71,7 @@ def employee_register_page(request):
             
             employee      = clinic_form.save(commit=False)
             
-            group         = Group.objects.get_or_create(name='employee')
+            group,created = Group.objects.get_or_create(name='employee')
             
             employee.user = user
             
@@ -139,11 +139,17 @@ def home_page(request):
     
     user        = request.user
     
+    patient     = Patient.objects.filter(user=user).first()
+    
+    employee    = Employee.objects.filter(user=user).first()
+    
     is_employee = user.groups.filter(name='employee').exists()
     
     is_patient  = user.groups.filter(name='patient').exists()
     
     context     = {
+        'patient': patient,
+        'employee': employee,
         'user': user,
         'is_employee': is_employee,
         'is_patient': is_patient,
