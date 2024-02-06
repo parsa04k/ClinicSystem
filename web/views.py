@@ -377,19 +377,20 @@ def create_appointment(request):
     if request.method == 'POST':
         appointment = AppointmentForm(request.POST)
         
-        if appointment.is_valid():
+        clinic_id   = request.POST.get('clinic') 
             
-            visit         = appointment.save(commit=False)
-            
-            visit.patient = patient  # set patient to the current user's patient
-            
-            visit.status  = 'occupied'
-            
-            clinic_id     = request.POST.get('clinic') 
-            
-            clinic        = Clinic.objects.get(id=clinic_id)
-            
-            if clinic.availability:
+        clinic      = Clinic.objects.get(id=clinic_id)
+        
+        if clinic.availability:
+            if appointment.is_valid():
+                
+                visit         = appointment.save(commit=False)
+                
+                visit.patient = patient  # set patient to the current user's patient
+                
+                visit.status  = 'occupied'
+                
+                
                 visit.clinic = clinic
                 visit.save()
 
@@ -398,11 +399,10 @@ def create_appointment(request):
                 clinic.save()
 
                 messages.success(request, 'Appointment booked successfully.')
-                return redirect('home')  
-            else:
+                return redirect('home')      
+        else:
                 messages.error(request, 'The selected clinic is not available.')
-                return redirect('appointment_register')
-            
+                return redirect('home')
     appointment = AppointmentForm()
     return render(request, 'create_appointment.html',{'appointment': appointment})
 
